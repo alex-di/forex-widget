@@ -1,28 +1,28 @@
 
 (() => {
   const cssTemplate = `
-
+    .#{containerClass} {
+      border: #{borderWidth} solid #{borderColor};
+      color: #{textColor};
+    }
     .#{containerClass} .container {
       width: 100%;
       box-sizing: border-box;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-       grid-auto-rows: 30px;
+      grid-template-columns: repeat(4, 1fr) 1.5fr;
+      grid-auto-rows: 30px;
       grid-auto-columns: 1fr;
     }
 
     .#{containerClass} .container div {
       height: 30px;
-      border: 1px solid #{borderColor};
-      border-collapse: collapse;
+      border-width: #{borderWidth};
+      border-style: solid;
+      border-color: #{borderColor};
       display: flex;
       justify-content: center;
       align-items: center;
       background: #{defaultColor}
-    }
-
-    .#{containerClass} .container div:not(:first-child) {
-      border-left: none;
     }
 
     .#{containerClass} .container div.up {
@@ -32,6 +32,9 @@
       background: #{downColor};
     }
 
+    .#{containerClass} .container div.sign {
+      font-weight: bold;
+    }
 
     /* medium */
     .#{containerClass}.medium .container {
@@ -87,7 +90,10 @@
         containerClass: 'widget-container',
         upColor: 'rgba(0, 255, 0, .3)',
         downColor: 'rgba(255, 0, 0, .3)',
-        defaultColor: 'transparent'
+        borderColor: '#000',
+        defaultColor: 'transparent',
+        borderWidth: '1px',
+        textColor: '#000',
       }
       this.setConfig(config)
 
@@ -103,6 +109,7 @@
       fetch('https://cors-anywhere.herokuapp.com/http://webrates.truefx.com/rates/connect.html?f=csv')
       .then(res => res.text())
       .then(res => {
+
         let addClass = ''
         if (this.container.clientWidth <= 400) {
           addClass = 'small'
@@ -167,19 +174,8 @@
     }
 
     setConfig(config) {
-      let needCssUpdate = false
-      if (
-        this.config.upColor !== config.upColor ||
-        this.config.downColor !== config.downColor ||
-        this.config.defaultColor !== config.defaultColor
-      ) {
-        console.log('update css')
-        needCssUpdate = true
-      }
       Object.assign(this.config, config)
-      if (needCssUpdate)
-        this.updateCss()
-
+      this.updateCss()
     }
 
     updateCss() {
